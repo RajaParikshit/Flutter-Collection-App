@@ -66,7 +66,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `clients` (`id` INTEGER, `account_number` TEXT NOT NULL, `balance` REAL, `client_name` TEXT, PRIMARY KEY (`id`, `account_number`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `client_collection` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `account_number` TEXT NOT NULL, `collection_amount` REAL NOT NULL, `date` INTEGER, FOREIGN KEY (`account_number`) REFERENCES `clients` (`account_number`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `client_collection` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `account_number` TEXT NOT NULL, `amount` REAL NOT NULL, `date` INTEGER NOT NULL, FOREIGN KEY (`account_number`) REFERENCES `clients` (`account_number`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE INDEX `index_clients_account_number` ON `clients` (`account_number`)');
         await database.execute(
@@ -159,7 +159,7 @@ class _$ClientCollectionEntityDao extends ClientCollectionEntityDao {
             (ClientCollectionEntity item) => <String, dynamic>{
                   'id': item.id,
                   'account_number': item.accountNumber,
-                  'collection_amount': item.collectionAmount,
+                  'amount': item.amount,
                   'date': item.date
                 });
 

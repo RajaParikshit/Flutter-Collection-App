@@ -27,13 +27,14 @@ class ClientCollectionEntity implements ClientCollectionModel{
   @override
   String accountNumber;
 
-  @ColumnInfo(name: 'collection_amount', nullable: false)
+  @ColumnInfo(name: 'amount', nullable: false)
   @override
-  double collectionAmount;
+  double amount;
 
+  @ColumnInfo(name: 'date', nullable: false)
   @override
   int date;
 
-  ClientCollectionEntity({this.id, @required this.accountNumber, @required this.collectionAmount, @required this.date});
+  ClientCollectionEntity({this.id, @required this.accountNumber, @required this.amount, @required this.date});
 
 }

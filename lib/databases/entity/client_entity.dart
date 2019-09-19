@@ -1,6 +1,5 @@
 import 'package:collection_app/models/client_model.dart';
 import 'package:floor/floor.dart';
-import 'package:meta/meta.dart';
 
 @Entity(tableName: 'clients',
         indices: [

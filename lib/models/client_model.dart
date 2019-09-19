@@ -1,14 +1,16 @@
+import 'package:collection_app/bloc/models/client_model.dart';
+import 'package:flutter/foundation.dart';
 
+class ClientModel implements ClientModelContract{
+  @override
+  String accountNumber;
 
-abstract class ClientModel{
+  @override
+  double balance;
 
-  set name(String name);
-  String get name;
+  @override
+  String name;
 
-  set accountNumber(String accountNumber);
-  String get accountNumber;
-
-  set balance(double balance);
-  double get balance;
+  ClientModel({@required this.accountNumber, @required this.balance, @required this.name});
 
 }

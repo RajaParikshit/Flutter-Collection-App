@@ -1,14 +1,17 @@
+import 'package:collection_app/bloc/models/client_collection_model_contract.dart';
+import 'package:flutter/foundation.dart';
 
+class ClientCollectionModel implements ClientCollectionModelContract{
+  @override
+  String accountNumber;
 
-abstract class ClientCollectionModel{
+  @override
+  double amount;
 
-  set accountNumber(String accountNumber);
-  String get accountNumber;
+  @override
+  int date;
 
-  set date(int date);
-  int get date;
+  ClientCollectionModel({@required this.accountNumber, @required this.amount, @required this.date});
 
-  set collectionAmount(double collectionAmount);
-  double get collectionAmount;
 
 }
