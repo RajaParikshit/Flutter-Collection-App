@@ -1,3 +1,4 @@
+import 'package:collection_app/resource/values/app_colors.dart';
 import 'package:collection_app/resource/values/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,10 +11,11 @@ class DashboardButton extends StatelessWidget{
   final String label;
   final Color labelColor;
   final VoidCallback onPress;
+  final bool isEnabled;
 
 
   const DashboardButton({Key key, @required this.buttonColor, @required this.icon, @required this.iconColor,
-    @required this.label, @required this.labelColor, @required this.onPress }):super(key:key);
+    @required this.label, @required this.labelColor, @required this.onPress, this.isEnabled }):super(key:key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,9 @@ class DashboardButton extends StatelessWidget{
               child: Icon(
                 this.icon,
                 size: 24.0,
-                color: this.iconColor,
+                color: this.isEnabled ?? true
+                    ? this.iconColor
+                    : AppColors.COLOR_GREY,
               ),
             ),
             Padding(
@@ -38,7 +42,9 @@ class DashboardButton extends StatelessWidget{
               child: Text(
                 this.label,
                 style: TextStyle(
-                    color: this.labelColor,
+                    color: this.isEnabled ?? true
+                        ? this.labelColor
+                        : AppColors.COLOR_GREY,
                     letterSpacing: 1.5,
                     fontSize: AppDimens.FONT_BUTTON_DIMENS),
               ),
@@ -57,13 +63,15 @@ class DashboardButton extends StatelessWidget{
         elevation: 32.0,
         splashColor: this.iconColor,
       ),
-      decoration: BoxDecoration(boxShadow: [
+      decoration: this.isEnabled ?? true
+                ? BoxDecoration(boxShadow: [
         BoxShadow(
             color: this.buttonColor,
             offset: Offset(0, 8),
             blurRadius: 12,
             spreadRadius: -4)
-      ]),
+      ])
+                : null,
     );
   }
 

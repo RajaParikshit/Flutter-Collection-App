@@ -7,4 +7,7 @@ abstract class PathpedhiModelContract{
   String address3;
   int pin;
   String phone;
+
+  Map<String, dynamic> toJson();
+
 }

@@ -34,6 +34,8 @@ dependencies:
 
   permission_handler: any
 
+  connectivity: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

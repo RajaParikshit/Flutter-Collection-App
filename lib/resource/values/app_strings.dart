@@ -92,8 +92,50 @@ class AppStrings{
   //------------------------------- Add Agent ----------------------------------
   static const String ADD_AGENT_TITLE = "Add Agent";
 
+  static const String ADD_AGENT_NAME_LABEL = "Name";
+  static const String ADD_AGENT_CODE_LABEL = "Code";
+  static const String ADD_AGENT_PASSWORD_LABEL = "Password";
+  static const String ADD_AGENT_ACCOUNT_CODE_LABEL = "Account Code";
+
+  static const String ADD_AGENT_NAME_HINT = "Enter Name";
+  static const String ADD_AGENT_CODE_HINT = "Enter unique code";
+  static const String ADD_AGENT_PASSWORD_HINT = "Enter password";
+  static const String ADD_AGENT_ACCOUNT_CODE_HINT = "Enter unique code";
+
+  static const String ADD_AGENT_NAME_ERROR_MSG = "Enter proper agent name";
+  static const String ADD_AGENT_CODE_ERROR_MSG = "Mention agent code";
+  static const String ADD_AGENT_PASSWORD_ERROR_MSG = "Enter secured password";
+  static const String ADD_AGENT_ACCOUNT_CODE_ERROR_MSG = "Mention account code";
+
+  static const String ADD_AGENT_ADD_BUTTON_LABEL = "Add";
+  static const String ADD_AGENT_SUCCESSFUL_MSG = "Agent added successfully";
+
   //------------------------------- Add Pathpedhi ------------------------------
   static const String ADD_PATHPEDHI_TITLE = "Add Pathpedhi";
 
+  static const String ADD_PATHPEDHI_NAME_LABEL = "Name";
+  static const String ADD_PATHPEDHI_ADDRESS1_LABEL = "Address 1";
+  static const String ADD_PATHPEDHI_ADDRESS2_LABEL = "Address 2";
+  static const String ADD_PATHPEDHI_ADDRESS3_LABEL = "Address 3";
+  static const String ADD_PATHPEDHI_PIN_LABEL = "Pin";
+  static const String ADD_PATHPEDHI_PHONE_LABEL = "Phone";
+
+  static const String ADD_PATHPEDHI_NAME_HINT = "Enter Name";
+  static const String ADD_PATHPEDHI_ADDRESS1_HINT = "Enter address 1 line";
+  static const String ADD_PATHPEDHI_ADDRESS2_HINT = "Enter address 2 line";
+  static const String ADD_PATHPEDHI_ADDRESS3_HINT = "Enter address 3 line";
+  static const String ADD_PATHPEDHI_PIN_HINT = "Enter pin";
+  static const String ADD_PATHPEDHI_PHONE_HINT = "Enter phone number";
+
+  static const String ADD_PATHPEDHI_NAME_ERROR = "Enter proper pathpedhi name";
+  static const String ADD_PATHPEDHI_ADDRESS1_ERROR = "Mention line 1 of address";
+  static const String ADD_PATHPEDHI_ADDRESS2_ERROR = "Mention line 2 of address";
+  static const String ADD_PATHPEDHI_ADDRESS3_ERROR = "Mention line 3 of address";
+  static const String ADD_PATHPEDHI_PIN_ERROR = "Enter postal pin code";
+  static const String ADD_PATHPEDHI_PHONE_ERROR = "Enter pathpedhi phone number";
+
+  static const String ADD_PATHPEDHI_ADD_BUTTON_LABEL = "Add";
+
+  static const String ADD_PATHPEDHI_SUCCESSFUL_MSG = "Pathpedhi added successfully";
 
 }

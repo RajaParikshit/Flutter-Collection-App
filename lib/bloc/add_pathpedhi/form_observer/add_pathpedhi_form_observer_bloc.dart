@@ -2,14 +2,20 @@
 import 'dart:async';
 
 import 'package:collection_app/bloc/add_pathpedhi/form_observer/add_pathpedhi_form_observer_contract.dart';
+import 'package:collection_app/resource/values/app_strings.dart';
 
 class AddPathpedhiFormObserverBloc implements AddPathpedhiFormObserverContract{
+
+  static const int PATHPEDHI_NAME_VALID_NAMES = 3;
+  static const int PATHPEDHI_ADDRESS_WORDS = 2;
+  static const int PATHPEDHI_PIN_VALID_LENGTH = 6;
+  static const int PATHPEDHI_PHONE_VALID_LENGTH = 10;
 
   var _nameController = StreamController<String>.broadcast();
   var _address1Controller = StreamController<String>.broadcast();
   var _address2Controller = StreamController<String>.broadcast();
   var _address3Controller = StreamController<String>.broadcast();
-  var _pinController = StreamController<int>.broadcast();
+  var _pinController = StreamController<String>.broadcast();
   var _phoneController = StreamController<String>.broadcast();
 
   var _isPathpedhiAddEnabledController = StreamController<bool>.broadcast();
@@ -48,27 +54,38 @@ class AddPathpedhiFormObserverBloc implements AddPathpedhiFormObserverContract{
 
   @override
   bool checkIsValidAddress(String address) {
-    // TODO: implement checkIsValidAddress
-    return null;
+    if(address != null && address.split(" ").length >= PATHPEDHI_ADDRESS_WORDS &&
+        address.split(" ")[PATHPEDHI_ADDRESS_WORDS - 1] != ""){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
   bool checkIsValidName(String name) {
-    // TODO: implement checkIsValidName
-    return null;
+    if(name != null && name.split(" ").length >= PATHPEDHI_NAME_VALID_NAMES &&
+        name.split(" ")[PATHPEDHI_NAME_VALID_NAMES - 1] != ""){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
   bool checkIsValidPhone(String phone) {
-    // TODO: implement checkIsValidPhone
-    return null;
+    if(phone != null && phone.length >= PATHPEDHI_PHONE_VALID_LENGTH){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
-  bool checkIsValidPin(int pin) {
-    // TODO: implement checkIsValidPin
-    return null;
-  }
+  bool checkIsValidPin(String pin) => pin != null && pin.length == PATHPEDHI_PIN_VALID_LENGTH;
 
   @override
   void dispose() {
@@ -92,26 +109,32 @@ class AddPathpedhiFormObserverBloc implements AddPathpedhiFormObserverContract{
     isValidName.listen((isValidName){
       _tempIsValidName = isValidName;
       _isPathpedhiAddEnabledController.add(checkIsAllCompulsoryParamsValid());
+      isValidName ? invalidName(nameErrorText: null) : invalidName();
     });
     isValidAddress1.listen((isValidAddress1){
       _tempIsValidAddress1 = isValidAddress1;
       _isPathpedhiAddEnabledController.add(checkIsAllCompulsoryParamsValid());
+      isValidAddress1 ? invalidAddress1(address1ErrorText: null) : invalidAddress1();
     });
     isValidAddress2.listen((isValidAddress2){
       _tempIsValidAddress2 = isValidAddress2;
       _isPathpedhiAddEnabledController.add(checkIsAllCompulsoryParamsValid());
+      isValidAddress2 ? invalidAddress2(address2ErrorText: null) : invalidAddress2();
     });
     isValidAddress3.listen((isValidAddress3){
       _tempIsValidAddress3 = isValidAddress3;
       _isPathpedhiAddEnabledController.add(checkIsAllCompulsoryParamsValid());
+      isValidAddress3 ? invalidAddress3(address3ErrorText: null) : invalidAddress3();
     });
     isValidPin.listen((isValidPin){
       _tempIsValidPin = isValidPin;
       _isPathpedhiAddEnabledController.add(checkIsAllCompulsoryParamsValid());
+      isValidPin ? invalidPin(pinErrorText: null) : invalidPin();
     });
     isValidPhone.listen((isValidPhone){
       _tempIsValidPhone= isValidPhone;
       _isPathpedhiAddEnabledController.add(checkIsAllCompulsoryParamsValid());
+      isValidPhone ? invalidPhone(phoneErrorText: null) : invalidPhone();
     });
   }
 
@@ -155,32 +178,32 @@ class AddPathpedhiFormObserverBloc implements AddPathpedhiFormObserverContract{
   Stream<String> get pinErrorText => _pinErrorTextController.stream;
 
   @override
-  void invalidAddress1({String address1ErrorText}) {
+  void invalidAddress1({String address1ErrorText = AppStrings.ADD_PATHPEDHI_ADDRESS1_ERROR}) {
       _address1ErrorTextController.add(address1ErrorText);
   }
 
   @override
-  void invalidAddress2({String address2ErrorText}) {
+  void invalidAddress2({String address2ErrorText = AppStrings.ADD_PATHPEDHI_ADDRESS2_ERROR}) {
       _address2ErrorTextController.add(address2ErrorText);
   }
 
   @override
-  void invalidAddress3({String address3ErrorText}) {
+  void invalidAddress3({String address3ErrorText = AppStrings.ADD_PATHPEDHI_ADDRESS3_ERROR}) {
       _address3ErrorTextController.add(address3ErrorText);
   }
 
   @override
-  void invalidName({String nameErrorText}) {
+  void invalidName({String nameErrorText = AppStrings.ADD_PATHPEDHI_NAME_ERROR}) {
       _nameErrorTextController.add(nameErrorText);
   }
 
   @override
-  void invalidPhone({String phoneErrorText}) {
+  void invalidPhone({String phoneErrorText = AppStrings.ADD_PATHPEDHI_PHONE_ERROR}) {
       _phoneErrorTextController.add(phoneErrorText);
   }
 
   @override
-  void invalidPin({String pinErrorText}) {
+  void invalidPin({String pinErrorText = AppStrings.ADD_PATHPEDHI_PIN_ERROR}) {
       _pinErrorTextController.add(pinErrorText);
   }
 

@@ -5,4 +5,6 @@ abstract class AgentModelContract {
   String agentName;
   String agentPassword;
   String accountCode;
+
+  Map<String, dynamic> toJson();
 }

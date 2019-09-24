@@ -112,6 +112,7 @@ class LoginViewModel {
             {
               _loginFormObserver.invalidUserPassword(
                   errorMsg: loginResponse.message);
+              break;
             }
         }
       }

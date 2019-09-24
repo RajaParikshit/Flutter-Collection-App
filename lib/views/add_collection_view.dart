@@ -1,19 +1,33 @@
+import 'dart:async';
+
+import 'package:collection_app/app/app.dart';
 import 'package:collection_app/app/app_routes.dart';
 import 'package:collection_app/components/activity.dart';
+import 'package:collection_app/components/app_alert_dialog.dart';
+import 'package:collection_app/models/client_model.dart';
 import 'package:collection_app/resource/values/app_colors.dart';
 import 'package:collection_app/resource/values/app_dimens.dart';
 import 'package:collection_app/resource/values/app_strings.dart';
+import 'package:collection_app/view_models/add_collection_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AddCollectionView extends StatefulWidget {
+  final ClientModel clientModel;
+
+  AddCollectionView({Key key, @required this.clientModel}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _AddCollectionViewState();
 }
 
 class _AddCollectionViewState extends State<AddCollectionView> {
+  AddCollectionViewModel _addCollectionViewModel;
+
   @override
   void initState() {
+    _addCollectionViewModel = AddCollectionViewModel(App(), widget.clientModel);
+    _subscribeToViewModel();
     super.initState();
   }
 
@@ -40,11 +54,13 @@ class _AddCollectionViewState extends State<AddCollectionView> {
       body: ListView(
         scrollDirection: Axis.vertical,
         physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.only(left: AppDimens.PADDING_LOOSE_COMFORT_DIMENS,
-            right: AppDimens.PADDING_LOOSE_COMFORT_DIMENS, top: 48.0),
+        padding: EdgeInsets.only(
+            left: AppDimens.PADDING_LOOSE_COMFORT_DIMENS,
+            right: AppDimens.PADDING_LOOSE_COMFORT_DIMENS,
+            top: 48.0),
         children: <Widget>[
           Text(
-            "3,600",
+            _addCollectionViewModel.client.balance.toString(),
             style: TextStyle(
               color: AppColors.ACCENT_COLOR_DARK,
               fontWeight: FontWeight.bold,
@@ -91,7 +107,7 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                     Padding(
                       padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
                       child: Text(
-                        ": xxxxxxx",
+                        ": " + _addCollectionViewModel.client.accountNumber,
                         style: TextStyle(
                           color: AppColors.COLOR_GREY,
                           fontSize: AppDimens.FONT_NORMAL_DIMENS,
@@ -118,7 +134,7 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                     Padding(
                       padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
                       child: Text(
-                        ": xxxxxxx xxxxxxxx xxxxxxxxx",
+                        ": " + _addCollectionViewModel.client.name,
                         style: TextStyle(
                           color: AppColors.COLOR_GREY,
                           fontSize: AppDimens.FONT_NORMAL_DIMENS,
@@ -145,7 +161,7 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                     Padding(
                       padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
                       child: Text(
-                        ": 15 September 2019",
+                        ": " + _addCollectionViewModel.collectionDateString,
                         style: TextStyle(
                           color: AppColors.COLOR_GREY,
                           fontSize: AppDimens.FONT_NORMAL_DIMENS,
@@ -158,7 +174,8 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                 ],
               )),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 48.0, horizontal: AppDimens.PADDING_COMFORT_DIMENS),
+            padding: EdgeInsets.symmetric(
+                vertical: 48.0, horizontal: AppDimens.PADDING_COMFORT_DIMENS),
             child: TextFormField(
               // Setting expecting text input for username
               keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -179,207 +196,205 @@ class _AddCollectionViewState extends State<AddCollectionView> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 54.0, right: 54.0),
-            child: Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                    color: AppColors.ACCENT_COLOR,
-                    offset: Offset(0, 8),
-                    blurRadius: 16,
-                    spreadRadius: -6)
-              ]),
-              child: RaisedButton(
-                  child: Text(
-                    AppStrings.ADD_COLLECTION_ADD_BTN_LABEL,
-                    style: TextStyle(
-                      fontSize: AppDimens.FONT_LARGE_BUTTON_DIMENS,
-                      letterSpacing: AppDimens.LETTER_SPACE_LOOSE_COMFORT_DIMENS,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  elevation: 12.0,
-                  splashColor: AppColors.ACCENT_COLOR_DARK,
-                  onPressed: () {
-                    showDialog<void>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: EdgeInsets.only(
-                                top: 32.0, bottom: AppDimens.PADDING_LOOSE_DIMENS, left: AppDimens.PADDING_LOOSE_DIMENS),
-                            contentPadding: EdgeInsets.all(0.0),
-                            backgroundColor: AppColors.PRIMARY_COLOR_LIGHT,
-                            title: Text(
-                              AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_TITLE,
-                              style: TextStyle(
-                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.ACCENT_COLOR_DARK,
-                                fontSize: AppDimens.FONT_TITLE_DIMENS,
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(48.0),
-                                topRight: Radius.circular(4.0),
-                                bottomLeft: Radius.circular(4.0),
-                                bottomRight: Radius.circular(4.0),
-                              ),
-                            ),
-                            actions: <Widget>[
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
+          StreamBuilder<bool>(
+            stream: _addCollectionViewModel.isLoading(),
+            builder: (context, snapshot) {
+              return snapshot.data ?? false
+                  ? Padding(
+                      padding: EdgeInsets.only(top: 36.0),
+                      child: const LinearProgressIndicator(
+                        backgroundColor: AppColors.PRIMARY_COLOR,
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(left: 54.0, right: 54.0),
+                      child: Container(
+                        decoration: BoxDecoration(boxShadow: [
+                          BoxShadow(
+                              color: AppColors.ACCENT_COLOR,
+                              offset: Offset(0, 8),
+                              blurRadius: 16,
+                              spreadRadius: -6)
+                        ]),
+                        child: StreamBuilder<bool>(
+                          stream: _addCollectionViewModel.getAddCollectionFormObserver().isAddCollectionEnabled,
+                          builder: (context, snapshot){
+                            return RaisedButton(
                                 child: Text(
-                                  AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_REJECT_BTN_LABEL,
+                                  AppStrings.ADD_COLLECTION_ADD_BTN_LABEL,
                                   style: TextStyle(
-                                    fontSize: AppDimens.FONT_BUTTON_DIMENS,
-                                    letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                                    fontSize: AppDimens.FONT_LARGE_BUTTON_DIMENS,
+                                    letterSpacing:
+                                    AppDimens.LETTER_SPACE_LOOSE_COMFORT_DIMENS,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                textColor: AppColors.PRIMARY_COLOR,
-                                highlightedBorderColor: AppColors.PRIMARY_COLOR,
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_CONFIRM_BTN_LABEL,
-                                  style: TextStyle(
-                                    fontSize: AppDimens.FONT_BUTTON_DIMENS,
-                                    letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                textColor: AppColors.PRIMARY_COLOR_LIGHT,
-                                color: AppColors.PRIMARY_COLOR,
-                              )
-                            ],
-                            content: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-                              child: SingleChildScrollView(
-                                child: ListBody(
-                                  children: <Widget>[
-                                    Table(
-                                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                                      columnWidths: {
-                                        1: FractionColumnWidth(0.40),
-                                      },
-                                      children: [
-                                        TableRow(children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
-                                            child: Text(
-                                              AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_CURRENT_BALANCE_LABEL,
-                                              style: TextStyle(
-                                                color: AppColors.PRIMARY_COLOR,
-                                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
-                                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
-                                            child: Text(
-                                              "xxxxxxxxx",
-                                              style: TextStyle(
-                                                color: AppColors.ACCENT_COLOR_DARK,
-                                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
-                                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ),
-                                        ]),
-                                        TableRow(children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
-                                            child: Text(
-                                              AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_ADDED_AMOUNT_LABEL,
-                                              style: TextStyle(
-                                                color: AppColors.PRIMARY_COLOR,
-                                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
-                                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
-                                            child: Text(
-                                              "+ xxxxx",
-                                              style: TextStyle(
-                                                color: AppColors.ACCENT_COLOR_DARK,
-                                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
-                                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ),
-                                        ]),
-                                      ],
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(1),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.PRIMARY_COLOR,
-                                        shape: BoxShape.rectangle,
-                                      ),
-                                    ),
-                                    Table(
-                                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                                      columnWidths: {
-                                        1: FractionColumnWidth(0.40),
-                                      },
-                                      children: [
-                                        TableRow(children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
-                                            child: Text(
-                                              AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_NEW_BALANCE_LABEL,
-                                              style: TextStyle(
-                                                color: AppColors.PRIMARY_COLOR,
-                                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
-                                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
-                                            child: Text(
-                                              "xxxxxxxxx",
-                                              style: TextStyle(
-                                                color: AppColors.ACCENT_COLOR_DARK,
-                                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
-                                                letterSpacing: AppDimens.LETTER_SPACE_COMFORT_DIMENS,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ),
-                                        ]),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        });
-                  }),
-            ),
+                                elevation: 12.0,
+                                splashColor: AppColors.ACCENT_COLOR_DARK,
+                                onPressed: snapshot.data ?? false
+                                    ? () => _addCollectionViewModel.onAddButtonClick()
+                                    : null,
+                            );
+                          },
+                        ),
+                      ),
+                    );
+            },
           )
         ],
       ),
     );
+  }
+
+  void _subscribeToViewModel() {
+    _addCollectionViewModel.onAskForConfirmation().listen((_) {
+      showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppAlertDialog(
+              title: AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_TITLE,
+              onReject: (){
+              },
+              onAccept: (){
+              },
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Table(
+                      defaultVerticalAlignment:
+                      TableCellVerticalAlignment.middle,
+                      columnWidths: {
+                        1: FractionColumnWidth(0.40),
+                      },
+                      children: [
+                        TableRow(children: [
+                          Padding(
+                            padding: EdgeInsets.all(
+                                AppDimens.PADDING_COMFORT_DIMENS),
+                            child: Text(
+                              AppStrings
+                                  .ADD_COLLECTION_CONFIRM_DIALOG_CURRENT_BALANCE_LABEL,
+                              style: TextStyle(
+                                color: AppColors.PRIMARY_COLOR,
+                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
+                                letterSpacing:
+                                AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(
+                                AppDimens.PADDING_COMFORT_DIMENS),
+                            child: Text(
+                              _addCollectionViewModel.client.balance.toString(),
+                              style: TextStyle(
+                                color: AppColors.ACCENT_COLOR_DARK,
+                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
+                                letterSpacing:
+                                AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ]),
+                        TableRow(children: [
+                          Padding(
+                            padding: EdgeInsets.all(
+                                AppDimens.PADDING_COMFORT_DIMENS),
+                            child: Text(
+                              AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_ADDED_AMOUNT_LABEL,
+                              style: TextStyle(
+                                color: AppColors.PRIMARY_COLOR,
+                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
+                                letterSpacing:
+                                AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(
+                                AppDimens.PADDING_COMFORT_DIMENS),
+                            child: Text(
+                              "+ " +_addCollectionViewModel.addedAmount.toString(),
+                              style: TextStyle(
+                                color: AppColors.ACCENT_COLOR_DARK,
+                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
+                                letterSpacing:
+                                AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: AppColors.PRIMARY_COLOR,
+                        shape: BoxShape.rectangle,
+                      ),
+                    ),
+                    Table(
+                      defaultVerticalAlignment:
+                      TableCellVerticalAlignment.middle,
+                      columnWidths: {
+                        1: FractionColumnWidth(0.40),
+                      },
+                      children: [
+                        TableRow(children: [
+                          Padding(
+                            padding: EdgeInsets.all(
+                                AppDimens.PADDING_COMFORT_DIMENS),
+                            child: Text(
+                              AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_NEW_BALANCE_LABEL,
+                              style: TextStyle(
+                                color: AppColors.PRIMARY_COLOR,
+                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
+                                letterSpacing:
+                                AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(
+                                AppDimens.PADDING_COMFORT_DIMENS),
+                            child: Text(
+                              _addCollectionViewModel.newBalance.toString(),
+                              style: TextStyle(
+                                color: AppColors.ACCENT_COLOR_DARK,
+                                fontSize: AppDimens.FONT_NORMAL_DIMENS,
+                                letterSpacing:
+                                AppDimens.LETTER_SPACE_COMFORT_DIMENS,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+    });
+    _addCollectionViewModel.onSuccessfulAddCollection().listen((_){
+      setState(() {
+        Timer(
+            const Duration(milliseconds: 500),
+                () => Navigator.pushReplacementNamed(
+                context, AppRoutes.APP_ROUTE_DASHBOARD));
+      });
+      _addCollectionViewModel.dispose();
+    });
   }
 }

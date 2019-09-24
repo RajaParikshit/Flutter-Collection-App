@@ -1,8 +1,14 @@
 import 'dart:async';
 
 import 'package:collection_app/bloc/add_agent/form_observer/add_agent_form_observer_contract.dart';
+import 'package:collection_app/resource/values/app_strings.dart';
 
 class AddAgentFormObserverBloc implements AddAgentFormObserverContract{
+
+  static const int AGENT_CODE_VALID_LENGTH = 5;
+  static const int AGENT_NAME_VALID_NAMES = 2;
+  static const int AGENT_PASSWORD_VALID_LENGTH = 8;
+  static const int ACCOUNT_CODE_VALID_LENGTH = 5;
 
   var _agentCodeController = StreamController<String>.broadcast();
   var _agentNameController = StreamController<String>.broadcast();
@@ -51,26 +57,43 @@ class AddAgentFormObserverBloc implements AddAgentFormObserverContract{
 
   @override
   bool checkIsValidAccountCode(String accountCode) {
-    // TODO: implement checkIsValidAccountCode
-    return null;
+    if (accountCode != null && accountCode.length == ACCOUNT_CODE_VALID_LENGTH){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
   bool checkIsValidAgentCode(String agentCode) {
-    // TODO: implement checkIsValidAgentCode
-    return null;
+    if (agentCode != null && agentCode.length == AGENT_CODE_VALID_LENGTH){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
   bool checkIsValidAgentName(String name) {
-    // TODO: implement checkIsValidAgentName
-    return null;
+    if (name != null && name.split(" ").length >= AGENT_NAME_VALID_NAMES &&
+        name.split(" ")[AGENT_NAME_VALID_NAMES - 1] != ""){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
   bool checkIsValidAgentPassword(String password) {
-    // TODO: implement checkIsValidAgentPassword
-    return null;
+    if (password !=null && password.length >= AGENT_PASSWORD_VALID_LENGTH){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @override
@@ -128,22 +151,22 @@ class AddAgentFormObserverBloc implements AddAgentFormObserverContract{
   Stream<bool> get isValidAgentPassword => _agentPasswordController.stream.map(checkIsValidAgentPassword);
 
   @override
-  void invalidAccountCode({String accountCodeErrorText}) {
+  void invalidAccountCode({String accountCodeErrorText = AppStrings.ADD_AGENT_ACCOUNT_CODE_ERROR_MSG}) {
       _accountCodeErrorTextController.add(accountCodeErrorText);
   }
 
   @override
-  void invalidAgentCode({String agentCodeErrorText}) {
+  void invalidAgentCode({String agentCodeErrorText = AppStrings.ADD_AGENT_CODE_ERROR_MSG}) {
       _agentCodeErrorTextController.add(agentCodeErrorText);
   }
 
   @override
-  void invalidAgentName({String agentNameErrorText}) {
+  void invalidAgentName({String agentNameErrorText = AppStrings.ADD_AGENT_NAME_ERROR_MSG}) {
       _agentNameErrorTextController.add(agentNameErrorText);
   }
 
   @override
-  void invalidAgentPassword({String agentPasswordErrorText}) {
+  void invalidAgentPassword({String agentPasswordErrorText = AppStrings.ADD_AGENT_PASSWORD_ERROR_MSG}) {
      _agentPasswordErrorTextController.add(agentPasswordErrorText);
   }
 

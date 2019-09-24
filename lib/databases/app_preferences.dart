@@ -1,3 +1,4 @@
+import 'package:collection_app/models/agent_model.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -14,6 +15,12 @@ class AppPreferences{
 
   // Constants for Preference-Name
   static const String PREF_IS_LOGGED_IN = "IS_LOGGED_IN";
+  static const String PREF_IS_SUPER_USER = "IS_SUPER_USER";
+  static const String PREF_IS_IMPORT_ENABLED = "IS_IMPORT_ENABLED";
+
+  static const String PREF_AGENT_CODE = "AGENT_CODE";
+  static const String PREF_AGENT_NAME = "AGENT_NAME";
+  static const String PREF_AGENT_ACCOUNT_NO = "AGENT_ACCOUNT";
 
   //-------------------------------------------------------------------- Variables -------------------------------------------------------------------
   // Future variable to check SharedPreference Instance is ready
@@ -58,6 +65,27 @@ class AppPreferences{
   /// @usage -> Get value of IS_LOGGED_IN from preferences
   Future<bool> getLoggedIn() async => await _getPreference(prefName: PREF_IS_LOGGED_IN) ?? false;// Check value for NULL. If NULL provide default value as FALSE.
 
+  void setIsSuperUser({@required bool isSuperUser}) => _setPreference(prefName: PREF_IS_SUPER_USER, prefValue: isSuperUser, prefType: PREF_TYPE_BOOL);
+
+  Future<bool> getIsSuperUser() async => await _getPreference(prefName: PREF_IS_SUPER_USER) ?? false;
+
+  void setIsImportEnabled({@required bool isImportEnabled}) => _setPreference(prefName: PREF_IS_IMPORT_ENABLED, prefValue: isImportEnabled, prefType: PREF_TYPE_BOOL);
+
+  Future<bool> getIsImportEnabled() async => await _getPreference(prefName: PREF_IS_IMPORT_ENABLED) ?? true;
+
+  void setAgent({@required AgentModel agent}) {
+      _setPreference(prefName: PREF_AGENT_CODE, prefValue: agent.agentCode, prefType: PREF_TYPE_STRING);
+      _setPreference(prefName: PREF_AGENT_NAME, prefValue: agent.agentName, prefType: PREF_TYPE_STRING);
+      _setPreference(prefName: PREF_AGENT_ACCOUNT_NO, prefValue: agent.accountCode, prefType: PREF_TYPE_STRING);
+  }
+
+  Future<AgentModel> getAgent() async{
+    return AgentModel(
+        agentCode: await _getPreference(prefName: PREF_AGENT_CODE),
+        agentName: await _getPreference(prefName: PREF_AGENT_NAME),
+        accountCode: await _getPreference(prefName: PREF_AGENT_ACCOUNT_NO)
+    );
+  }
 
   //--------------------------------------------------- Private Preference Methods ----------------------------------------------------
   /// Set Preference Method -> void

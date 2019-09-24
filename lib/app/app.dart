@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:collection_app/app/app_routes.dart';
 import 'package:collection_app/databases/app_database.dart';
+import 'package:collection_app/repository/agent_repository.dart';
 import 'package:collection_app/repository/client_repository.dart';
+import 'package:collection_app/repository/dashboard_repository.dart';
+import 'package:collection_app/repository/pathpedhi_repository.dart';
 import 'package:collection_app/resource/values/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:collection_app/databases/app_preferences.dart';
@@ -60,7 +63,7 @@ class App extends StatelessWidget {
   }
 
   Future<AppDatabase> getAppDatabase(){
-    return AppDatabase.getInstance(getAppExecutor());
+    return AppDatabase.getInstance();
   }
 
 
@@ -71,9 +74,20 @@ class App extends StatelessWidget {
     return LoginRepository(appPreferences: appPreferences);
   }
 
+  PathpedhiRepository getPathpedhiRepository(){
+    return PathpedhiRepository();
+  }
 
-  ClientRepository getClientRepository({@required AppDatabase appDatabase}){
-    return ClientRepository(appDatabase: appDatabase);
+  AgentRepository getAgentRepository(){
+    return AgentRepository();
+  }
+
+  ClientRepository getClientRepository(){
+    return ClientRepository(getAppDatabase());
+  }
+
+  DashboardRepository getDashboardRepository({@required AppPreferences appPreferences}){
+    return DashboardRepository(appPreferences: appPreferences);
   }
 
 }

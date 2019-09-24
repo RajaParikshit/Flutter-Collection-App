@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection_app/databases/app_preferences.dart';
+import 'package:collection_app/models/agent_model.dart';
 import 'package:collection_app/models/repository_response.dart';
 import 'package:meta/meta.dart';
 
@@ -52,6 +53,14 @@ class LoginRepository {
           if (loginResponse.result) {// Successful login
             // Set IS_LOGGED_IN to TRUE in preference
             _appPreferences.setLoggedIn(isLoggedIn: true);
+
+            if (loginResponse.data['user_code'] == 1){
+              _appPreferences.setIsSuperUser(isSuperUser: false);
+              _appPreferences.setAgent(agent:AgentModel.fromJson(loginResponse.data));
+            }else{
+              _appPreferences.setIsSuperUser(isSuperUser: true);
+            }
+
           } else {// Unsuccessful login
             // Set IS_LOGGED_IN to FALSE in preference
             _appPreferences.setLoggedIn(isLoggedIn: false);

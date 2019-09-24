@@ -25,9 +25,9 @@ abstract class AppDatabase extends FloorDatabase {
 
   StreamController<bool> _databaseCreatedStream = new StreamController.broadcast();
 
-  static Future<AppDatabase> getInstance(final AppExecutor appExecutor) {
+  static Future<AppDatabase> getInstance() {
     if (_instance == null) {
-        _instance = _buildDatabase(appExecutor).then((appDatabase){
+        _instance = _buildDatabase().then((appDatabase){
           appDatabase.updateDatabaseCreated();
           return appDatabase;
         });
@@ -35,7 +35,7 @@ abstract class AppDatabase extends FloorDatabase {
     return _instance;
   }
 
-  static Future<AppDatabase> _buildDatabase(final AppExecutor appExecutor) {
+  static Future<AppDatabase> _buildDatabase() {
     return $FloorAppDatabase
         .databaseBuilder(AppDatabase.DATABASE_NAME)
         .build()

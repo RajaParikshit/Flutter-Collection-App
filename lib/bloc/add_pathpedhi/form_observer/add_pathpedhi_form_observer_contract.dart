@@ -34,7 +34,7 @@ abstract class AddPathpedhiFormObserverContract{
 
   bool checkIsValidName(String name);
   bool checkIsValidAddress(String address);
-  bool checkIsValidPin(int pin);
+  bool checkIsValidPin(String pin);
   bool checkIsValidPhone(String phone);
   bool checkIsAllCompulsoryParamsValid();
 
