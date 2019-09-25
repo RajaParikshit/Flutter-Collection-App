@@ -86,8 +86,8 @@ class App extends StatelessWidget {
     return ClientRepository(getAppDatabase());
   }
 
-  DashboardRepository getDashboardRepository({@required AppPreferences appPreferences}){
-    return DashboardRepository(appPreferences: appPreferences);
+  DashboardRepository getDashboardRepository({@required AppPreferences appPreferences, @required Future<AppDatabase> appDatabase}){
+    return DashboardRepository(appPreferences: appPreferences, appDatabase: appDatabase);
   }
 
 }

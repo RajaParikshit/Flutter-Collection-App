@@ -1,6 +1,7 @@
 import 'package:collection_app/app/app_routes.dart';
 import 'package:collection_app/components/activity.dart';
 import 'package:collection_app/components/client_list_item.dart';
+import 'package:collection_app/models/client_model.dart';
 import 'package:collection_app/resource/values/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,7 +26,11 @@ class _ClientListViewState extends State<ClientListView>
             clientName: "Client Name $index",
             clientAccountNo: "Client Accont No",
             onPress: (){
-              Navigator.pushNamed(context, AppRoutes.APP_ROUTE_ADD_COLLECTION);
+              Navigator.pushNamed(context, AppRoutes.APP_ROUTE_ADD_COLLECTION, arguments: ClientModel(
+                name: "Parikshit Chalke",
+                accountNumber: "12345",
+                balance: 2345.50
+              ));
             },
           );
         },

@@ -55,9 +55,10 @@ class AppRoutes{
       }
 
       case APP_ROUTE_ADD_COLLECTION : {
+        var clientModel = routeSettings.arguments;
         return MaterialPageRoute<void>(
           settings: routeSettings,
-          builder: (BuildContext context) => AddCollectionView(),
+          builder: (BuildContext context) => AddCollectionView(clientModel: clientModel,),
         );
       }
 

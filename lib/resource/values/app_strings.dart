@@ -50,6 +50,7 @@ class AppStrings{
   static const String ADD_COLLECTION_AMOUNT_INPUT_LABEL = "Amount";
   static const String ADD_COLLECTION_AMOUNT_INPUT_HINT = "Enter Amount to deposit";
   static const String ADD_COLLECTION_ADD_BTN_LABEL = "Add";
+  static const String ADD_COLLECTION_AMOUNT_INPUT_ERROR_TEXT = "Enter minimum amount";
 
   static const String ADD_COLLECTION_CONFIRM_DIALOG_TITLE = "Confirm Amount";
   static const String ADD_COLLECTION_CONFIRM_DIALOG_CURRENT_BALANCE_LABEL = "Current Balance";

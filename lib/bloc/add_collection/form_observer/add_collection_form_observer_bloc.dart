@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:collection_app/bloc/add_collection/form_observer/add_collection_form_observer_contract.dart';
+import 'package:collection_app/resource/values/app_strings.dart';
 
 class AddCollectionFormObserverBloc implements AddCollectionFormObserverContract{
 
@@ -25,8 +26,7 @@ class AddCollectionFormObserverBloc implements AddCollectionFormObserverContract
 
   @override
   bool checkIsValidAmount(double amount) {
-    // TODO: implement checkIsValidAmount
-    return null;
+    return amount > 50.0;
   }
 
   @override
@@ -52,7 +52,7 @@ class AddCollectionFormObserverBloc implements AddCollectionFormObserverContract
   Stream<bool> get isValidAmount => _amountController.stream.map(checkIsValidAmount);
 
   @override
-  void invalidAmount({String amountErrorText}) {
+  void invalidAmount({String amountErrorText = AppStrings.ADD_COLLECTION_AMOUNT_INPUT_ERROR_TEXT}) {
       _amountErrorTextController.add(amountErrorText);
   }
 

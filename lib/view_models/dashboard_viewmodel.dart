@@ -19,7 +19,7 @@ class DashboardViewModel{
   factory DashboardViewModel({@required App app}){
     _instance ??=
       DashboardViewModel._internal(dashboardRepository: app.getDashboardRepository(
-          appPreferences: app.getAppPreferences()));
+          appPreferences: app.getAppPreferences(), appDatabase: app.getAppDatabase()));
 
     return _instance;
   }

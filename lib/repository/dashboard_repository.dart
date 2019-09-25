@@ -12,12 +12,17 @@ class DashboardRepository{
   AppDatabase _appDatabase;
 
   var _isClientRecordsAdded = StreamController<RepositoryResponse>.broadcast();
+  var _onDatabaseAvailable = StreamController<void>.broadcast();
 
   factory DashboardRepository({@required AppPreferences appPreferences, @required Future<AppDatabase> appDatabase})
       => DashboardRepository._internal(appPreferences: appPreferences, appDatabase: appDatabase);
 
   DashboardRepository._internal({@required AppPreferences appPreferences, @required Future<AppDatabase> appDatabase}){
     this._appPreferences = appPreferences;
+    appDatabase.then((database){
+       _appDatabase = database;
+       _onDatabaseAvailable.add(null);
+    });
   }
 
   Future<bool> isSuperUser(){
@@ -46,6 +51,7 @@ class DashboardRepository{
   void dispose(){
     _appPreferences = null;
     _isClientRecordsAdded.close();
+    _onDatabaseAvailable.close();
   }
 
   void logout(){

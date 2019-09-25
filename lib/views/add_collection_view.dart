@@ -173,28 +173,35 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                   ]),
                 ],
               )),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: 48.0, horizontal: AppDimens.PADDING_COMFORT_DIMENS),
-            child: TextFormField(
-              // Setting expecting text input for username
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              // Rest of input decoration will be automatically inherited from current theme
-              decoration: InputDecoration(
-                  // Label to input box
-                  labelText: AppStrings.ADD_COLLECTION_AMOUNT_INPUT_LABEL,
-                  // Hint to input box
-                  hintText: AppStrings.ADD_COLLECTION_AMOUNT_INPUT_HINT,
-                  suffixIcon: Icon(
-                    Icons.attach_money,
-                    color: AppColors.PRIMARY_COLOR,
-                  )),
-              style: TextStyle(
-                fontSize: AppDimens.FONT_LARGE_DIMENS,
-                fontWeight: FontWeight.bold,
-                letterSpacing: AppDimens.LETTER_SPACE_LOOSE_COMFORT_DIMENS,
-              ),
-            ),
+          StreamBuilder<String>(
+            stream: _addCollectionViewModel.getAddCollectionFormObserver().amountErrorText,
+            builder: (context, snapshot){
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: 48.0, horizontal: AppDimens.PADDING_COMFORT_DIMENS),
+                child: TextFormField(
+                  // Setting expecting text input for username
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  // Rest of input decoration will be automatically inherited from current theme
+                  controller: _addCollectionViewModel.amountController,
+                  decoration: InputDecoration(
+                    // Label to input box
+                      labelText: AppStrings.ADD_COLLECTION_AMOUNT_INPUT_LABEL,
+                      // Hint to input box
+                      hintText: AppStrings.ADD_COLLECTION_AMOUNT_INPUT_HINT,
+                      errorText: snapshot.data,
+                      suffixIcon: Icon(
+                        Icons.attach_money,
+                        color: AppColors.PRIMARY_COLOR,
+                      )),
+                  style: TextStyle(
+                    fontSize: AppDimens.FONT_LARGE_DIMENS,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: AppDimens.LETTER_SPACE_LOOSE_COMFORT_DIMENS,
+                  ),
+                ),
+              );
+            },
           ),
           StreamBuilder<bool>(
             stream: _addCollectionViewModel.isLoading(),
@@ -209,13 +216,14 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                   : Padding(
                       padding: EdgeInsets.only(left: 54.0, right: 54.0),
                       child: Container(
-                        decoration: BoxDecoration(boxShadow: [
+                        decoration: snapshot.data ?? false
+                            ? BoxDecoration(boxShadow: [
                           BoxShadow(
                               color: AppColors.ACCENT_COLOR,
                               offset: Offset(0, 8),
                               blurRadius: 16,
                               spreadRadius: -6)
-                        ]),
+                        ]) : null,
                         child: StreamBuilder<bool>(
                           stream: _addCollectionViewModel.getAddCollectionFormObserver().isAddCollectionEnabled,
                           builder: (context, snapshot){
@@ -243,6 +251,9 @@ class _AddCollectionViewState extends State<AddCollectionView> {
           )
         ],
       ),
+      onPop: (){
+          _addCollectionViewModel.onExit();
+      },
     );
   }
 
@@ -251,12 +262,15 @@ class _AddCollectionViewState extends State<AddCollectionView> {
       showDialog<void>(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context) {
+          builder: (BuildContext dialogContext) {
             return AppAlertDialog(
               title: AppStrings.ADD_COLLECTION_CONFIRM_DIALOG_TITLE,
               onReject: (){
+                Navigator.of(dialogContext).pop(false);
               },
               onAccept: (){
+                Navigator.of(dialogContext).pop(true);
+                _addCollectionViewModel.addCollection();
               },
               content: SingleChildScrollView(
                 child: ListBody(
@@ -395,6 +409,38 @@ class _AddCollectionViewState extends State<AddCollectionView> {
                 context, AppRoutes.APP_ROUTE_DASHBOARD));
       });
       _addCollectionViewModel.dispose();
+    });
+    _addCollectionViewModel.onCanExit().listen((canExit){
+
+      if (canExit){
+        setState(() {
+          Navigator.of(context).pop(true);
+        });
+        _addCollectionViewModel.dispose();
+      }
+      else{
+        showDialog<void>(
+            context: context,
+            builder: (BuildContext dialogContext){
+              return AppAlertDialog(
+                  title: "Are you sure ?",
+                  content: Text(
+                      "Are you sure you want exit ?"
+                  ),
+                  onReject:(){
+                    Navigator.of(dialogContext).pop(false);
+                  },
+                  onAccept: (){
+                    Navigator.of(dialogContext).pop(true);
+                    setState(() {
+                      Navigator.of(context).pop(true);
+                    });
+                    _addCollectionViewModel.dispose();
+                  });
+            }
+        );
+      }
+
     });
   }
 }

@@ -29,6 +29,7 @@ class AddCollectionViewModel{
   var _addCollectionResponseController = StreamController<void>.broadcast();
   var _onAskForConfirmationController = StreamController<void>.broadcast();
   var _isLoadingController = StreamController<bool>.broadcast();
+  var _canExitController = StreamController<bool>.broadcast();
 
 
   factory AddCollectionViewModel(App app, ClientModel client){
@@ -54,7 +55,7 @@ class AddCollectionViewModel{
 
   void _init(){
     amountController.addListener(()=>
-    getAddCollectionFormObserver().amount.add(amountController.text));
+    getAddCollectionFormObserver().amount.add(double.parse(amountController.text)));
     _isLoadingController.add(false);
     _listenAddCollectionResponse();
   }
@@ -96,10 +97,20 @@ class AddCollectionViewModel{
 
   Stream<bool> isLoading() => _isLoadingController.stream;
 
+  bool checkIsEmpty() => amountController.text.length == 0;
+
+  void onExit(){
+    _canExitController.add(checkIsEmpty());
+  }
+
+  Stream<bool> onCanExit() => _canExitController.stream;
+
   void dispose(){
     _instance = null;
     _addCollectionResponseController.close();
     _onAskForConfirmationController.close();
+    _isLoadingController.close();
+    _canExitController.close();
     amountController.clear();
   }
 
