@@ -8,6 +8,6 @@ class NetworkEndpoints {
   static const String ADD_PATHPEDHI_API = _BASE_API + "/pathpedhi/add";
 
   static const String ADD_AGENT_API = _BASE_API + "/agent/add";
-  static const String GET_COLLECTION_FOR_AGENT = _BASE_API + "/agent/get_collection";
+  static const String GET_CLIENTS_OF_AGENT = _BASE_API + "/agent/get_clients";
 
 }

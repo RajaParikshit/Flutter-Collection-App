@@ -21,7 +21,7 @@ class AgentModel implements AgentModelContract{
               @required this.agentName, this.agentPassword});
 
   AgentModel.fromJson(dynamic json){
-    this.accountCode = json[NetworkConfig.API_KEY_AGENT_ACCOUNT_CODE];
+    this.accountCode = json[NetworkConfig.API_KEY_AGENT_ACCOUNT_CODE].toString();
     this.agentCode = json[NetworkConfig.API_KEY_AGENT_CODE];
     this.agentName = json[NetworkConfig.API_KEY_AGENT_NAME];
   }

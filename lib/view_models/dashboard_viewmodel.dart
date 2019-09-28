@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:collection_app/app/app.dart';
+import 'package:collection_app/models/repository_response.dart';
 import 'package:collection_app/repository/dashboard_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -45,6 +46,10 @@ class DashboardViewModel{
     });
   }
 
+  void importClientsOfAgentFromServer(){
+    _dashboardRepository.importClientsOfAgentFromServer();
+  }
+
   Stream<bool> isImportEnabled(){
     return _dashboardRepository.isImportEnabled();
   }
@@ -52,6 +57,8 @@ class DashboardViewModel{
   bool isSuperUser(){
     return this._isSuperUser;
   }
+
+  Stream<RepositoryResponse> isClientRecordImported() => _dashboardRepository.isClientRecordImported();
 
   void logout(){
     _dashboardRepository.logout();

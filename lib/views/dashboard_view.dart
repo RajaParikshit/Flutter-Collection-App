@@ -98,7 +98,9 @@ class FrontLayer extends StatelessWidget {
 
   final DashboardViewModel dashboardViewModel;
 
-  FrontLayer({Key key, @required this.dashboardViewModel}):super(key:key);
+  FrontLayer({Key key, @required this.dashboardViewModel}):super(key:key){
+    _subscribeToViewModel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +176,9 @@ class FrontLayer extends StatelessWidget {
                                         iconColor: AppColors.PRIMARY_COLOR,
                                         label: AppStrings.DASHBOARD_IMPORT_DIALOG_FROM_SERVER_LABEL,
                                         labelColor: AppColors.ACCENT_COLOR_DARK,
-                                        onPress: () {}),
+                                        onPress: () {
+                                          dashboardViewModel.importClientsOfAgentFromServer();
+                                        }),
                                   ],
                                 ));
                           }
@@ -220,6 +224,13 @@ class FrontLayer extends StatelessWidget {
           );
         });
   }
+
+  void _subscribeToViewModel(){
+    dashboardViewModel.isClientRecordImported().listen((clientRecordImported){
+      Fluttertoast.showToast(msg: clientRecordImported.message);
+    });
+  }
+
 }
 
 class BackLayer extends StatelessWidget {

@@ -7,13 +7,12 @@ import 'package:flutter/widgets.dart';
 class Activity extends StatelessWidget{
 
   final String title;
-  final Widget header;
   final Widget body;
   final List<Widget> actions;
   final VoidCallback onPop;
 
   const Activity({key,
-  @required this.title, this.actions, this.header, @required this.body, this.onPop}
+  @required this.title, this.actions, @required this.body, this.onPop}
   ):super(key:key);
 
   @override

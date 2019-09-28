@@ -10,11 +10,11 @@ class NetworkConfig {
   static const String API_KEY_USER_PASSWORD = "user_password";
 
   /// Client API Keys
-  static const String API_KEY_CLIENT_NAME = "client_name";
-  static const String API_KEY_CLIENT_ACCOUNT_NO = "client_account_no";
-  static const String API_KEY_CLIENT_BALANCE = "client_balance";
-  static const String API_KEY_CLIENT_COLLECTION_DATE = "client_collection_date";
-  static const String API_KEY_CLIENT_COLLECTION_AMOUNT = "client_collection_amount";
+  static const String API_KEY_CLIENT_NAME = "name";
+  static const String API_KEY_CLIENT_ACCOUNT_NO = "account_no";
+  static const String API_KEY_CLIENT_BALANCE = "balance";
+  static const String API_KEY_CLIENT_COLLECTION_DATE = "collection_date";
+  static const String API_KEY_CLIENT_COLLECTION_AMOUNT = "collection_amount";
 
   /// Pathpedhi API Keys
   static const String API_KEY_PATHPEDHI_NAME = "pathpedhi_name";
@@ -25,8 +25,8 @@ class NetworkConfig {
   static const String API_KEY_PATHPEDHI_PHONE = "pathpedhi_phone";
 
   /// Agent API Keys
-  static const String API_KEY_AGENT_NAME = "agent_name";
-  static const String API_KEY_AGENT_CODE = "agent_code";
-  static const String API_KEY_AGENT_ACCOUNT_CODE = "agent_account_code";
-  static const String API_KEY_AGENT_PASSWORD = "agent_password";
+  static const String API_KEY_AGENT_NAME = "name";
+  static const String API_KEY_AGENT_CODE = "user_id";
+  static const String API_KEY_AGENT_ACCOUNT_CODE = "account_code";
+  static const String API_KEY_AGENT_PASSWORD = "password";
 }

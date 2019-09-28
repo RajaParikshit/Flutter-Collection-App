@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:collection_app/databases/app_preferences.dart';
+import 'package:collection_app/databases/entity/client_entity.dart';
 import 'package:collection_app/models/repository_response.dart';
-import 'package:collection_app/network/nao/dashboard_nao.dart';
+import 'package:collection_app/network/nao/agent_nao.dart';
 import 'package:collection_app/databases/app_database.dart';
+import 'package:collection_app/network/network_config.dart';
 import 'package:flutter/cupertino.dart';
 
 class DashboardRepository{
@@ -33,20 +35,35 @@ class DashboardRepository{
     return _appPreferences.getIsImportEnabled().asStream();
   }
 
-  void importFromServer(){
+  void importClientsOfAgentFromServer(){
     _appPreferences.getAgent().then((agent){
-      DashboardNAO().getClientRecordsForAgent(agentCode: agent.agentCode)
+      AgentNAO().getClientOfAgent(agentCode: agent.agentCode)
           .then((clientRecordsResponse){
             if(clientRecordsResponse.result){
+                List<ClientEntity> clientsList = List();
+                for(var i=0; i<clientRecordsResponse.data.length; i++){
+                  var client = clientRecordsResponse.data[i];
+                  clientsList.add(ClientEntity(
+                      null,
+                      client[NetworkConfig.API_KEY_CLIENT_ACCOUNT_NO].toString(),
+                      client[NetworkConfig.API_KEY_CLIENT_BALANCE].toDouble(),
+                      client[NetworkConfig.API_KEY_CLIENT_NAME],));
+                }
+                _appDatabase.clientEntityDao.insertBulkClients(clientsList).then((_){
+                    _appPreferences.setIsImportEnabled(isImportEnabled: false);
+                    _isClientRecordsAdded.add(clientRecordsResponse);
+                });
 
             }
-            _isClientRecordsAdded.add(clientRecordsResponse);
+            else{
+              _isClientRecordsAdded.add(clientRecordsResponse);
+            }
       });
     });
 
   }
 
-  Stream<RepositoryResponse> isClientRecordAdded() => _isClientRecordsAdded.stream;
+  Stream<RepositoryResponse> isClientRecordImported() => _isClientRecordsAdded.stream;
 
   void dispose(){
     _appPreferences = null;
@@ -56,6 +73,7 @@ class DashboardRepository{
 
   void logout(){
     _appPreferences.setLoggedIn(isLoggedIn: false);
+    _appPreferences.setIsImportEnabled(isImportEnabled: true);
   }
 
 }

@@ -4,8 +4,9 @@ import 'dart:async';
 
 import 'package:collection_app/app/app.dart';
 import 'package:collection_app/bloc/add_collection/form_observer/add_collection_form_observer_bloc.dart';
-import 'package:collection_app/models/client_collection_model.dart';
+import 'package:collection_app/databases/entity/client_collection_entity.dart';
 import 'package:collection_app/models/client_model.dart';
+import 'package:collection_app/models/repository_response.dart';
 import 'package:collection_app/repository/client_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -26,7 +27,7 @@ class AddCollectionViewModel{
   double addedAmount;
   double newBalance;
 
-  var _addCollectionResponseController = StreamController<void>.broadcast();
+  var _addCollectionResponseController = StreamController<RepositoryResponse>.broadcast();
   var _onAskForConfirmationController = StreamController<void>.broadcast();
   var _isLoadingController = StreamController<bool>.broadcast();
   var _canExitController = StreamController<bool>.broadcast();
@@ -70,17 +71,19 @@ class AddCollectionViewModel{
 
     _isLoadingController.add(true);
 
-    _clientRepository.addCollection(clientCollection: ClientCollectionModel(
-        accountNumber: client.accountNumber,
-        amount: addedAmount,
-        date: _collectionDate.millisecondsSinceEpoch));
+    _clientRepository.addCollection(clientCollection: ClientCollectionEntity(
+        null,
+        client.accountNumber,
+        addedAmount,
+        _collectionDate.millisecondsSinceEpoch));
   }
 
   void _listenAddCollectionResponse(){
     _clientRepository.getAddClientCollectionResponse().listen((addCollectionResponse){
         _isLoadingController.add(false);
         if(addCollectionResponse.result){
-          _addCollectionResponseController.add(null);
+          client.balance = addCollectionResponse.data;
+          _addCollectionResponseController.add(addCollectionResponse);
         }else{
           switch(addCollectionResponse.errorCode){
 
@@ -91,7 +94,7 @@ class AddCollectionViewModel{
 
   AddCollectionFormObserverBloc getAddCollectionFormObserver() => _addCollectionFormObserverBloc;
 
-  Stream<void> onSuccessfulAddCollection() => _addCollectionResponseController.stream;
+  Stream<RepositoryResponse> onAddCollection() => _addCollectionResponseController.stream;
 
   Stream<void> onAskForConfirmation() => _onAskForConfirmationController.stream;
 

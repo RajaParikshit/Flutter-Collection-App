@@ -1,26 +1,36 @@
+import 'package:collection_app/app/app.dart';
 import 'package:collection_app/components/activity.dart';
 import 'package:collection_app/components/collection_history_item.dart';
 import 'package:collection_app/components/date_time.dart';
+import 'package:collection_app/databases/entity/client_collection_entity.dart';
+import 'package:collection_app/models/client_model.dart';
 import 'package:collection_app/resource/values/app_colors.dart';
 import 'package:collection_app/resource/values/app_dimens.dart';
 import 'package:collection_app/resource/values/app_strings.dart';
+import 'package:collection_app/view_models/view_collection_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class ViewCollectionView extends StatefulWidget {
+
+  final ClientModel clientModel;
+
+  ViewCollectionView({Key key, @required this.clientModel}):super(key:key);
+
   @override
   State<StatefulWidget> createState() => _ViewCollectionViewState();
 }
 
 class _ViewCollectionViewState extends State<ViewCollectionView> {
-  DateTime _startDate;
-  DateTime _endDate;
+
+  ViewCollectionViewModel _viewCollectionViewModel;
 
   @override
   void initState() {
+    _viewCollectionViewModel = ViewCollectionViewModel(app:App(), client: widget.clientModel);
+    _viewCollectionViewModel.requestClientCollectionList();
     super.initState();
-    _startDate = DateTime.now();
-    _endDate = DateTime.now();
   }
 
   @override
@@ -33,7 +43,7 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
         padding: EdgeInsets.only(left: AppDimens.PADDING_LOOSE_COMFORT_DIMENS, right: AppDimens.PADDING_LOOSE_COMFORT_DIMENS, top: 48.0),
         children: <Widget>[
           Text(
-            "3,600",
+            _viewCollectionViewModel.client.balance.toString(),
             style: TextStyle(
               color: AppColors.ACCENT_COLOR_DARK,
               fontWeight: FontWeight.bold,
@@ -80,7 +90,7 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
                     Padding(
                       padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
                       child: Text(
-                        ": xxxxxxx",
+                        ": "+ _viewCollectionViewModel.client.accountNumber,
                         style: TextStyle(
                           color: AppColors.COLOR_GREY,
                           fontSize: AppDimens.FONT_NORMAL_DIMENS,
@@ -107,7 +117,7 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
                     Padding(
                       padding: EdgeInsets.all(AppDimens.PADDING_COMFORT_DIMENS),
                       child: Text(
-                        ": xxxxxxx xxxxxxxxx xxxxxxxxx",
+                        ": "+ _viewCollectionViewModel.client.name,
                         style: TextStyle(
                           color: AppColors.COLOR_GREY,
                           fontSize: AppDimens.FONT_NORMAL_DIMENS,
@@ -128,10 +138,10 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
                 Flexible(
                   child: DateField(
                     labelText: AppStrings.VIEW_COLLECTION_START_DATE_INPUT_LABEL,
-                    initialDate: _startDate,
+                    initialDate: _viewCollectionViewModel.startDate,
                     onDateChanged: (newDate) {
                       setState(() {
-                        _startDate = newDate;
+                        _viewCollectionViewModel.onStartDateChanged(newDate);
                       });
                     },
                   ),
@@ -146,10 +156,10 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
                 Flexible(
                   child: DateField(
                     labelText: AppStrings.VIEW_COLLECTION_END_DATE_INPUT_LABEL,
-                    initialDate: _endDate,
+                    initialDate: _viewCollectionViewModel.endDate,
                     onDateChanged: (newDate) {
                       setState(() {
-                        _endDate = newDate;
+                        _viewCollectionViewModel.onEndDateChanged(newDate);
                       });
                     },
                   ),
@@ -235,17 +245,32 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
                       )
                     ],
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.all(AppDimens.PADDING_LOOSE_COMFORT_DIMENS),
-                    itemBuilder: (BuildContext context, int index) {
-                      return CollectionHistoryItem(
-                        dateORname: "xx/xx/xxxx",
-                        amount: "xxx.xx \$",
-                      );
+                  StreamBuilder<List<ClientCollectionEntity>>(
+                    stream: _viewCollectionViewModel.getClientCollectionList(),
+                    builder: (context, snapshot){
+                      if (snapshot.data == null || snapshot.data.length == 0){
+                        return Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(AppDimens.PADDING_LOOSE_DIMENS),
+                            child:Text("No client collection found"),
+                          )
+                        );
+                      }else{
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.all(AppDimens.PADDING_LOOSE_COMFORT_DIMENS),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return CollectionHistoryItem(
+                              dateORname: DateFormat.yMMMd().format(
+                                  DateTime.fromMillisecondsSinceEpoch(snapshot.data[index].date)),
+                              amount: snapshot.data[index].amount.toString(),
+                            );
+                          },
+                        );
+                      }
                     },
-                    itemCount: 15,
                   )
                 ],
               ),
@@ -253,6 +278,10 @@ class _ViewCollectionViewState extends State<ViewCollectionView> {
           )
         ],
       ),
+      onPop: (){
+        _viewCollectionViewModel.dispose();
+        Navigator.pop(context);
+      },
     );
   }
 }

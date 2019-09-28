@@ -7,14 +7,8 @@ import 'package:flutter/cupertino.dart';
 
 class DashboardNAO{
 
-  Future<RepositoryResponse> getClientRecordsForAgent({@required String agentCode}) =>
-      NetworkUtil().post(
-          url: NetworkEndpoints.GET_COLLECTION_FOR_AGENT,
-          body: {
-            NetworkConfig.API_KEY_AGENT_CODE: agentCode,
-          }
-      ).then((response){
-        return RepositoryResponse.fromJson(response);
-      });
+
+
+
 
 }

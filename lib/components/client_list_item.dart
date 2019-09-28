@@ -18,7 +18,7 @@ class ClientListItem extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(0),
-      margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+      margin: EdgeInsets.symmetric(vertical: AppDimens.PADDING_COMFORT_DIMENS, horizontal: AppDimens.PADDING_LOOSE_COMFORT_DIMENS),
       decoration: BoxDecoration(
           color: AppColors.PRIMARY_COLOR_LIGHT,
           shape: BoxShape.rectangle,

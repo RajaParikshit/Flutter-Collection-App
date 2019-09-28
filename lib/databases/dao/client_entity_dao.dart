@@ -11,11 +11,20 @@ abstract class ClientEntityDao{
   @Insert(onConflict: OnConflictStrategy.REPLACE)
   Future<void> insertClient(ClientEntity clientEntity);
 
-  @Query("SELECT * FROM clients")
-  Future<List<ClientEntity>> getAllClients();
+  @update
+  Future<void> updateClient(ClientEntity clientEntity);
 
-  @Query("SELECT * FROM clients WHERE name LIKE %:name%")
-  Future<List<ClientEntity>> getClientByName(String name);
+  @Query("SELECT * FROM clients")
+  Stream<List<ClientEntity>> getAllClients();
+
+  @Query("SELECT * FROM clients WHERE account_number = :accountNo")
+  Future<ClientEntity> getClientByAccountNo(String accountNO);
+
+  @Query("SELECT * FROM clients WHERE client_name LIKE %:name%")
+  Stream<List<ClientEntity>> getClientByName(String name);
+
+  @Query("SELECT * FROM clients WHERE account_number LIKE %:accountNO%")
+  Stream<List<ClientEntity>> getClientByAccount(String accountNo);
 
   @Query("DELETE FROM clients")
   Future<void> deleteAllClient();

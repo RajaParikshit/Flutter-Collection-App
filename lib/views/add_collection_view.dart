@@ -11,6 +11,7 @@ import 'package:collection_app/resource/values/app_strings.dart';
 import 'package:collection_app/view_models/add_collection_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddCollectionView extends StatefulWidget {
   final ClientModel clientModel;
@@ -46,7 +47,7 @@ class _AddCollectionViewState extends State<AddCollectionView> {
             ),
             splashColor: AppColors.PRIMARY_COLOR_LIGHT,
             onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.APP_ROUTE_VIEW_COLLECTION);
+              Navigator.pushNamed(context, AppRoutes.APP_ROUTE_VIEW_COLLECTION, arguments: widget.clientModel);
             },
           ),
         )
@@ -401,12 +402,13 @@ class _AddCollectionViewState extends State<AddCollectionView> {
             );
           });
     });
-    _addCollectionViewModel.onSuccessfulAddCollection().listen((_){
+    _addCollectionViewModel.onAddCollection().listen((addCollectionResponse){
+
       setState(() {
+        Fluttertoast.showToast(msg: addCollectionResponse.message);
         Timer(
             const Duration(milliseconds: 500),
-                () => Navigator.pushReplacementNamed(
-                context, AppRoutes.APP_ROUTE_DASHBOARD));
+                () => Navigator.popAndPushNamed(context, AppRoutes.APP_ROUTE_VIEW_COLLECTION, arguments: widget.clientModel));
       });
       _addCollectionViewModel.dispose();
     });

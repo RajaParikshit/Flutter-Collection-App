@@ -6,9 +6,9 @@ import 'package:floor/floor.dart';
           Index(
               value: ['account_number']),
         ],
-        primaryKeys: ['id', 'account_number']
 )
 class ClientEntity implements ClientModel{
+
   @PrimaryKey(autoGenerate: true)
   int id;
 
@@ -23,6 +23,6 @@ class ClientEntity implements ClientModel{
   @override
   String name;
 
-  ClientEntity(this.id, this.name, this.accountNumber, this.balance);
+  ClientEntity(this.id, this.accountNumber, this.balance, this.name);
 
 }
